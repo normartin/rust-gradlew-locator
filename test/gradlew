@@ -1,0 +1,7 @@
+#!/bin/bash
+echo "Executing gralde for you"
+
+for FILE1 in "$@"
+do
+    echo "arg $FILE1"
+done
