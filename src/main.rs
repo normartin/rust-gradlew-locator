@@ -1,4 +1,5 @@
 use std::process::{Command, exit};
+#[cfg(unix)]
 use std::os::unix::process::CommandExt;
 use std::{env, fs};
 use std::path::PathBuf;
@@ -57,5 +58,13 @@ pub fn execute(exe: &PathBuf) {
 pub fn execute(exe: &PathBuf) {
     let args = env::args();
     println!("Executing {} {}", exe.display(), join(env::args().skip(1), " "));
-    Command::new(exe).args(args).spawn()?.wait();
+    let result = Command::new(exe).args(args).spawn();
+
+    match result {
+        Ok(_status) => return,
+        Err(e) => {
+            eprint!("Failed {}", e.to_string());
+            return
+        }
+    }
 }
