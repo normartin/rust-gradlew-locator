@@ -3,10 +3,8 @@ echo "This is gradlew. You made it!"
 
 echo "pwd $PWD"
 
-for FILE1 in "$@"
-do
-    echo "arg $FILE1"
-done
+echo "arg 1 $2"
+echo "arg 2 $3"
 
 if [ "$1" == "fail" ]; then
     echo "it failed"
