@@ -23,7 +23,7 @@ fn list_dir(dir: PathBuf) {
         None => match dir.parent() {
             Some(parent) => list_dir(parent.to_path_buf()),
             None => {
-                println!("Did not find gradlew wrapper!");
+                eprint!("Did not find gradlew wrapper!");
                 exit(1)
             }
         }

@@ -7,3 +7,8 @@ for FILE1 in "$@"
 do
     echo "arg $FILE1"
 done
+
+if [ "$1" == "fail" ]; then
+    echo "it failed"
+    exit 1
+fi
