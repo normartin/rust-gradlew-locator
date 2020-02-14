@@ -1,5 +1,7 @@
 #!/bin/bash
-echo "Executing gralde for you"
+echo "This is gradlew. You made it!"
+
+echo "pwd $PWD"
 
 for FILE1 in "$@"
 do

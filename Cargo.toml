@@ -4,7 +4,11 @@ version = "0.1.0"
 authors = ["martinmoeller <martinmoeller>"]
 edition = "2018"
 
+[features]
+# no features by default
+#default = ["other"]
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-
+itertools = "0.8.2"
