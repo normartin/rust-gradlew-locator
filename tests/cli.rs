@@ -21,7 +21,6 @@ fn can_pass_args() -> Result<(), Box<dyn std::error::Error>> {
         .arg("bar");
     cmd.assert()
         .success()
-        .stdout(predicate::str::contains("foo bar"))
         .stdout(predicate::str::contains("arg foo"))
         .stdout(predicate::str::contains("arg bar"));
 
