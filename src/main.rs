@@ -4,7 +4,11 @@ use std::{env, fs};
 use std::path::PathBuf;
 use itertools::join;
 
-static GRADLEW_NIX: &str = "gradlew";
+#[cfg(unix)]
+static GRADLEW: &str = "gradlew";
+
+#[cfg(windows)]
+static GRADLEW: &str = "gradlew.bat";
 
 fn main() {
     let current_dir = env::current_dir().expect("no current dir :-9?");
@@ -31,7 +35,7 @@ fn find_wrapper_in_dir(dir: &PathBuf) -> Option<PathBuf> {
     for file in files {
         match file {
             Ok(file) => {
-                if file.path().ends_with(PathBuf::from(GRADLEW_NIX)) {
+                if file.path().ends_with(PathBuf::from(GRADLEW)) {
                     return Some(file.path());
                 }
             }
