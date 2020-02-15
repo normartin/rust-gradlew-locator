@@ -15,7 +15,7 @@ jobs:
           toolchain: stable
           override: true
   build:
-    name: Build and test on ${{ matrix.os }}
+    name: ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -38,3 +38,18 @@ jobs:
         with:
           command: build
           args: --release --verbose
+      - name: Optimize
+        run: strip target/release/gw
+        if: matrix.os != 'windows-latest'
+      - uses: actions/upload-artifact@v1
+        name: Archive artifact
+        if: matrix.os != 'windows-latest'
+        with:
+          name: ${{ matrix.os }}
+          path: target/release/gw
+      - uses: actions/upload-artifact@v1
+        name: Archive exe artifact
+        if: matrix.os == 'windows-latest'
+        with:
+          name: ${{ matrix.os }}
+          path: target/release/gw.exe
