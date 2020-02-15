@@ -39,7 +39,8 @@ jobs:
           command: build
           args: --release --verbose
       - uses: actions/upload-artifact@v1
-        name: Archive production artifacts
+        name: Archive artifact
+        if: matrix.os != 'windows-latest'
         with:
           name: bin
-          path: target/gw
+          path: target/release/gw
