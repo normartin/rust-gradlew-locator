@@ -38,15 +38,18 @@ jobs:
         with:
           command: build
           args: --release --verbose
+      - name: Optimize
+        run: strip target/release/gw
+        if: matrix.os != 'windows-latest'
       - uses: actions/upload-artifact@v1
         name: Archive artifact
         if: matrix.os != 'windows-latest'
         with:
-          name: bin-${{ matrix.os }}
+          name: ${{ matrix.os }}
           path: target/release/gw
       - uses: actions/upload-artifact@v1
         name: Archive exe artifact
         if: matrix.os == 'windows-latest'
         with:
-          name: bin-${{ matrix.os }}.exe
+          name: ${{ matrix.os }}
           path: target/release/gw.exe
