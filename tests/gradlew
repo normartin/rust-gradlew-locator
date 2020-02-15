@@ -1,10 +1,11 @@
 #!/bin/bash
 echo "This is gradlew. You made it!"
 
-echo "pwd $PWD"
-
 echo "arg 1 $1"
 echo "arg 2 $2"
+
+CWD=${PWD##*/}
+echo "\"cwd $CWD\""
 
 if [ "$1" == "fail" ]; then
     echo "it failed"

@@ -11,7 +11,7 @@ static GRADLEW: &str = "gradlew.bat";
 
 fn main() {
     #[cfg(windows)]
-    ctrlc::set_handler(move || {
+        ctrlc::set_handler(move || {
         // ignore SIGINT and let the child process handle it
         // this is required for windows batch "Terminate batch job (Y/N)"
     }).expect("Error setting Ctrl-C handler");
@@ -24,7 +24,7 @@ fn list_dir(dir: PathBuf) {
     let found = find_wrapper_in_dir(&dir);
 
     match found {
-        Some(wrapper) =>  execute(&wrapper),
+        Some(wrapper) => execute(&wrapper, dir),
         None => match dir.parent() {
             Some(parent) => list_dir(parent.to_path_buf()),
             None => {
@@ -53,11 +53,11 @@ fn find_wrapper_in_dir(dir: &PathBuf) -> Option<PathBuf> {
 }
 
 // https://stackoverflow.com/a/53479765
-pub fn execute(exe: &PathBuf) {
+pub fn execute(gradle_path: &PathBuf, working_directory: PathBuf) {
     let args = env::args().skip(1);
-    println!("Executing {} {}", exe.display(), join(env::args().skip(1), " "));
+    println!("Executing {} {}", gradle_path.display(), join(env::args().skip(1), " "));
 
-    let spawn_result = Command::new(exe).args(args).spawn();
+    let spawn_result = Command::new(gradle_path).current_dir(working_directory).args(args).spawn();
 
     let result = spawn_result.and_then(|mut child| child.wait());
 

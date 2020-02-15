@@ -53,12 +53,24 @@ fn can_fail_to_find_gradlew() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-//#[test]
-//fn returns_failure_if_gradlew_fails() -> Result<(), Box<dyn std::error::Error>> {
-//    let mut cmd = Command::cargo_bin("gw")?;
-//    cmd.current_dir("./tests");
-//    cmd.arg("fail");
-//    cmd.assert().failure();
-//
-//    Ok(())
-//}
+#[test]
+fn uses_directoy_of_wrapper_as_workdir() -> Result<(), Box<dyn std::error::Error>> {
+    let mut cmd = Command::cargo_bin("gw")?;
+    cmd.current_dir("./tests/deep");
+    cmd.assert()
+        .success()
+        .stdout(predicate::str::contains("\"cwd tests\""))
+        .stdout(predicate::str::contains("deep").not());
+
+    Ok(())
+}
+
+#[test]
+fn returns_failure_if_gradlew_fails() -> Result<(), Box<dyn std::error::Error>> {
+    let mut cmd = Command::cargo_bin("gw")?;
+    cmd.current_dir("./tests");
+    cmd.arg("fail");
+    cmd.assert().failure();
+
+    Ok(())
+}
