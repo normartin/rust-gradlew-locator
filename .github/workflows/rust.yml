@@ -39,12 +39,12 @@ jobs:
           toolchain: stable
           target: ${{ matrix.target }}
           override: true
-      - uses: actions-rs/cargo@v1
-        name: Test
-        with:
-          use-cross: true
-          command: test
-          args: --target=${{ matrix.target }}
+#      - uses: actions-rs/cargo@v1
+#        name: Test
+#        with:
+#          use-cross: true
+#          command: test
+#          args: --target=${{ matrix.target }}
       - uses: actions-rs/cargo@v1
         name: Build
         with:
