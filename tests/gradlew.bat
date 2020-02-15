@@ -1,7 +1,7 @@
 @echo "This is gradlew. You made it!"
 
-@echo "arg 1 %2%"
-@echo "arg 2 %3%"
+@echo "arg 1 %1%"
+@echo "arg 2 %2%"
 
 @if "%1%" EQU "fail" (
     echo "it failed"

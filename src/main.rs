@@ -1,6 +1,4 @@
 use std::process::{Command, exit};
-#[cfg(unix)]
-use std::os::unix::process::CommandExt;
 use std::{env, fs};
 use std::path::PathBuf;
 use itertools::join;
@@ -48,22 +46,29 @@ fn find_wrapper_in_dir(dir: &PathBuf) -> Option<PathBuf> {
     None
 }
 
-#[cfg(unix)]
+// https://stackoverflow.com/a/53479765
 pub fn execute(exe: &PathBuf) {
-    let args = env::args();
+    let args = env::args().skip(1);
     println!("Executing {} {}", exe.display(), join(env::args().skip(1), " "));
-    Command::new(exe).args(args).exec();
-}
-#[cfg(windows)]
-pub fn execute(exe: &PathBuf) {
-    let args = env::args();
-    println!("Executing {} {}", exe.display(), join(env::args().skip(1), " "));
-    let result = Command::new(exe).args(args).spawn();
 
-    match result {
-        Ok(_status) => return,
+    let spawn_result = Command::new(exe).args(args).spawn();
+
+    match spawn_result {
+        Ok(mut status) => {
+            match status.wait() {
+                Ok(status) => {
+                    let code = status.code().unwrap_or(1);
+                    exit(code)
+                },
+                Err(e) => {
+                    println!("error: {:?}", e);
+                    exit(1)
+                }
+            }
+
+        },
         Err(e) => {
-            eprint!("Failed {}", e.to_string());
+            println!("Failed {}", e.to_string());
             return
         }
     }
