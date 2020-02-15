@@ -8,12 +8,12 @@ name: Cross-compile
 jobs:
   test:
     - uses: actions/checkout@v2
-        name: Checkout
-      - uses: actions-rs/toolchain@v1
-        name: Toolchain
-        with:
-          toolchain: stable
-          override: true
+      name: Checkout
+    - uses: actions-rs/toolchain@v1
+      name: Toolchain
+      with:
+        toolchain: stable
+        override: true
     - uses: actions-rs/cargo@v1
       name: Test
       with:
