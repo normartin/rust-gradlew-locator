@@ -1,7 +1,7 @@
-use std::process::{Command, exit};
-use std::{env, fs};
-use std::path::PathBuf;
 use itertools::join;
+use std::path::PathBuf;
+use std::process::{exit, Command};
+use std::{env, fs};
 
 #[cfg(unix)]
 static GRADLEW: &str = "gradlew";
@@ -11,10 +11,11 @@ static GRADLEW: &str = "gradlew.bat";
 
 fn main() {
     #[cfg(windows)]
-        ctrlc::set_handler(move || {
+    ctrlc::set_handler(move || {
         // ignore SIGINT and let the child process handle it
         // this is required for windows batch "Terminate batch job (Y/N)"
-    }).expect("Error setting Ctrl-C handler");
+    })
+    .expect("Error setting Ctrl-C handler");
 
     let current_dir = env::current_dir().expect("no current dir :-9?");
     list_dir(current_dir);
@@ -31,7 +32,7 @@ fn list_dir(dir: PathBuf) {
                 eprint!("Did not find gradlew wrapper!");
                 exit(1)
             }
-        }
+        },
     }
 }
 
@@ -44,9 +45,7 @@ fn find_wrapper_in_dir(dir: &PathBuf) -> Option<PathBuf> {
                     return Some(file.path());
                 }
             }
-            Err(_e) => {
-                println!("Error reading dir entry {}", _e)
-            }
+            Err(_e) => println!("Error reading dir entry {}", _e),
         }
     }
     None
@@ -55,9 +54,16 @@ fn find_wrapper_in_dir(dir: &PathBuf) -> Option<PathBuf> {
 // https://stackoverflow.com/a/53479765
 pub fn execute(gradle_path: &PathBuf, working_directory: PathBuf) {
     let args = env::args().skip(1);
-    println!("Executing {} {}", gradle_path.display(), join(env::args().skip(1), " "));
+    println!(
+        "Executing {} {}",
+        gradle_path.display(),
+        join(env::args().skip(1), " ")
+    );
 
-    let spawn_result = Command::new(gradle_path).current_dir(working_directory).args(args).spawn();
+    let spawn_result = Command::new(gradle_path)
+        .current_dir(working_directory)
+        .args(args)
+        .spawn();
 
     let result = spawn_result.and_then(|mut child| child.wait());
 
