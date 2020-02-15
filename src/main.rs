@@ -10,6 +10,12 @@ static GRADLEW: &str = "gradlew";
 static GRADLEW: &str = "gradlew.bat";
 
 fn main() {
+    #[cfg(windows)]
+    ctrlc::set_handler(move || {
+        // ignore SIGINT and let the child process handle it
+        // this is required for windows batch "Terminate batch job (Y/N)"
+    }).expect("Error setting Ctrl-C handler");
+
     let current_dir = env::current_dir().expect("no current dir :-9?");
     list_dir(current_dir);
 }
@@ -53,23 +59,14 @@ pub fn execute(exe: &PathBuf) {
 
     let spawn_result = Command::new(exe).args(args).spawn();
 
-    match spawn_result {
-        Ok(mut status) => {
-            match status.wait() {
-                Ok(status) => {
-                    let code = status.code().unwrap_or(1);
-                    exit(code)
-                },
-                Err(e) => {
-                    println!("error: {:?}", e);
-                    exit(1)
-                }
-            }
+    let result = spawn_result.and_then(|mut child| child.wait());
 
-        },
+    match result {
+        Ok(status) => exit(status.code().unwrap_or(1)),
+
         Err(e) => {
-            println!("Failed {}", e.to_string());
-            return
+            eprintln!("Failed {}", e.to_string());
+            exit(1)
         }
     }
 }
