@@ -1,6 +1,6 @@
 on:
   release:
-    types: [prereleased]
+    types: [created]
 
 name: Upload release artifacts
 
