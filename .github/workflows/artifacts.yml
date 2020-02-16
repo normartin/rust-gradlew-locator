@@ -54,4 +54,4 @@ jobs:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: target/release/gw.exe
           asset_name: gw-${{matrix.os}}.exe
-          asset_content_type: application/octet-streamh
+          asset_content_type: application/octet-stream
