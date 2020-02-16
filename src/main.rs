@@ -53,11 +53,11 @@ fn find_wrapper_in_dir(dir: &PathBuf) -> Option<PathBuf> {
 
 // https://stackoverflow.com/a/53479765
 pub fn execute(gradle_path: &PathBuf, working_directory: PathBuf) {
-    let args = env::args().skip(1);
+    let args: Vec<String> = env::args().skip(1).collect();
     println!(
         "Executing {} {}",
         gradle_path.display(),
-        join(env::args().skip(1), " ")
+        join(&args, " ")
     );
 
     let spawn_result = Command::new(gradle_path)
