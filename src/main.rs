@@ -15,7 +15,7 @@ fn main() {
         // ignore SIGINT and let the child process handle it
         // this is required for windows batch "Terminate batch job (Y/N)"
     })
-    .expect("Error setting Ctrl-C handler");
+    .expect("Error installing Ctrl-C handler");
 
     let current_dir = env::current_dir().expect("no current dir :-9?");
 
@@ -43,7 +43,7 @@ fn find_wrapper(dir: PathBuf) -> Option<(PathBuf, PathBuf)> {
 }
 
 fn find_wrapper_in_dir(dir: &PathBuf) -> Option<PathBuf> {
-    let files = fs::read_dir(dir).expect("Failed to list contents of ");
+    let files = fs::read_dir(dir).expect("Failed to list contents!");
 
     files
         .filter_map(Result::ok)
@@ -67,7 +67,7 @@ pub fn execute(gradle_path: &PathBuf, working_directory: PathBuf) {
         Ok(status) => exit(status.code().unwrap_or(1)),
 
         Err(e) => {
-            eprintln!("Failed {}", e.to_string());
+            eprintln!("Failed {}", e);
             exit(1)
         }
     }

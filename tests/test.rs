@@ -1,10 +1,12 @@
-use assert_cmd::prelude::*; // Add methods on commands
+use assert_cmd::prelude::*;
 use predicates::prelude::*;
-use std::process::Command; // Run programs // Used for writing assertions
+use std::process::Command;
+
+const BIN: &'static str = env!("CARGO_PKG_NAME");
 
 #[test]
 fn can_run_gw() -> Result<(), Box<dyn std::error::Error>> {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME"))?;
+    let mut cmd = Command::cargo_bin(BIN)?;
     cmd.current_dir("./tests");
     cmd.assert()
         .success()
@@ -15,7 +17,7 @@ fn can_run_gw() -> Result<(), Box<dyn std::error::Error>> {
 
 #[test]
 fn can_pass_args() -> Result<(), Box<dyn std::error::Error>> {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME"))?;
+    let mut cmd = Command::cargo_bin(BIN)?;
     cmd.current_dir("./tests");
     cmd.arg("foo").arg("bar");
     cmd.assert()
@@ -28,7 +30,7 @@ fn can_pass_args() -> Result<(), Box<dyn std::error::Error>> {
 
 #[test]
 fn can_run_deep_gw() -> Result<(), Box<dyn std::error::Error>> {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME"))?;
+    let mut cmd = Command::cargo_bin(BIN)?;
     cmd.current_dir("./tests/deep");
     cmd.arg("foobar").arg("test/file/doesnt/exist");
     cmd.assert()
@@ -40,7 +42,7 @@ fn can_run_deep_gw() -> Result<(), Box<dyn std::error::Error>> {
 
 #[test]
 fn can_fail_to_find_gradlew() -> Result<(), Box<dyn std::error::Error>> {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME"))?;
+    let mut cmd = Command::cargo_bin(BIN)?;
     cmd.current_dir(".");
     cmd.arg("foobar").arg("test/file/doesnt/exist");
     cmd.assert()
@@ -51,8 +53,8 @@ fn can_fail_to_find_gradlew() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[test]
-fn uses_directoy_of_wrapper_as_workdir() -> Result<(), Box<dyn std::error::Error>> {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME"))?;
+fn uses_directory_of_wrapper_as_working_dir() -> Result<(), Box<dyn std::error::Error>> {
+    let mut cmd = Command::cargo_bin(BIN)?;
     cmd.current_dir("./tests/deep");
     cmd.assert()
         .success()
@@ -64,7 +66,7 @@ fn uses_directoy_of_wrapper_as_workdir() -> Result<(), Box<dyn std::error::Error
 
 #[test]
 fn returns_failure_if_gradlew_fails() -> Result<(), Box<dyn std::error::Error>> {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME"))?;
+    let mut cmd = Command::cargo_bin(BIN)?;
     cmd.current_dir("./tests");
     cmd.arg("fail");
     cmd.assert().failure();
