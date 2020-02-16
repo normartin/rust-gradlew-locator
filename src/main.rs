@@ -18,47 +18,43 @@ fn main() {
     .expect("Error setting Ctrl-C handler");
 
     let current_dir = env::current_dir().expect("no current dir :-9?");
-    list_dir(current_dir);
+
+    let wrapper = find_wrapper(current_dir);
+
+    match wrapper {
+        None => {
+            eprint!("Did not find gradlew wrapper!");
+            exit(1)
+        }
+        Some((wrapper, dir)) => execute(&wrapper, dir),
+    }
 }
 
-fn list_dir(dir: PathBuf) {
+fn find_wrapper(dir: PathBuf) -> Option<(PathBuf, PathBuf)> {
     let found = find_wrapper_in_dir(&dir);
 
     match found {
-        Some(wrapper) => execute(&wrapper, dir),
+        Some(wrapper) => Some((wrapper, dir)),
         None => match dir.parent() {
-            Some(parent) => list_dir(parent.to_path_buf()),
-            None => {
-                eprint!("Did not find gradlew wrapper!");
-                exit(1)
-            }
+            Some(parent) => find_wrapper(parent.to_path_buf()),
+            None => None,
         },
     }
 }
 
 fn find_wrapper_in_dir(dir: &PathBuf) -> Option<PathBuf> {
     let files = fs::read_dir(dir).expect("Failed to list contents of ");
-    for file in files {
-        match file {
-            Ok(file) => {
-                if file.path().ends_with(PathBuf::from(GRADLEW)) {
-                    return Some(file.path());
-                }
-            }
-            Err(_e) => println!("Error reading dir entry {}", _e),
-        }
-    }
-    None
+
+    files
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .find(|file| file.ends_with(PathBuf::from(GRADLEW)))
 }
 
 // https://stackoverflow.com/a/53479765
 pub fn execute(gradle_path: &PathBuf, working_directory: PathBuf) {
-    let args = env::args().skip(1);
-    println!(
-        "Executing {} {}",
-        gradle_path.display(),
-        join(env::args().skip(1), " ")
-    );
+    let args: Vec<String> = env::args().skip(1).collect();
+    println!("Executing {} {}", gradle_path.display(), join(&args, " "));
 
     let spawn_result = Command::new(gradle_path)
         .current_dir(working_directory)
