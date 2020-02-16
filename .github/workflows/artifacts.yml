@@ -1,6 +1,6 @@
 on:
   release:
-    types: [published, created, edited, prereleased]
+    types: [created]
 
 name: Upload release artifacts
 
@@ -33,19 +33,18 @@ jobs:
         run: strip target/release/gw
         if: matrix.os != 'windows-latest'
 
-      - name: Upload Release Asset
+      - name: Upload release artifact
         if: matrix.os != 'windows-latest'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          #upload_url: ${{ jobs.create-release.steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: target/release/gw
           asset_name: gw-${{matrix.os}}
           asset_content_type: application/octet-stream
 
-      - name: Upload Release Asset win
+      - name: Upload release artifact windows
         if: matrix.os == 'windows-latest'
         uses: actions/upload-release-asset@v1
         env:
