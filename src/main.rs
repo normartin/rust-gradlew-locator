@@ -11,32 +11,38 @@ static GRADLEW: &str = "gradlew.bat";
 
 fn main() {
     #[cfg(windows)]
-    ctrlc::set_handler(move || {
+        ctrlc::set_handler(move || {
         // ignore SIGINT and let the child process handle it
         // this is required for windows batch "Terminate batch job (Y/N)"
     })
-    .expect("Error setting Ctrl-C handler");
+        .expect("Error setting Ctrl-C handler");
 
     let current_dir = env::current_dir().expect("no current dir :-9?");
-    list_dir(current_dir);
+
+    let wrapper = find_wrapper(current_dir);
+
+    match wrapper {
+        None => {
+            eprint!("Did not find gradlew wrapper!");
+            exit(1)
+        }
+        Some((wrapper, dir)) => execute(&wrapper, dir)
+    }
 }
 
-fn list_dir(dir: PathBuf) {
-    let found = find_wrapper_in_dir(&dir);
+fn find_wrapper(dir: PathBuf) -> Option<(PathBuf, PathBuf)> {
+    let found = find_wrapper_recursive(&dir);
 
     match found {
-        Some(wrapper) => execute(&wrapper, dir),
+        Some(wrapper) => Some((wrapper, dir)),
         None => match dir.parent() {
-            Some(parent) => list_dir(parent.to_path_buf()),
-            None => {
-                eprint!("Did not find gradlew wrapper!");
-                exit(1)
-            }
+            Some(parent) => find_wrapper(parent.to_path_buf()),
+            None => None
         },
     }
 }
 
-fn find_wrapper_in_dir(dir: &PathBuf) -> Option<PathBuf> {
+fn find_wrapper_recursive(dir: &PathBuf) -> Option<PathBuf> {
     let files = fs::read_dir(dir).expect("Failed to list contents of ");
     for file in files {
         match file {
