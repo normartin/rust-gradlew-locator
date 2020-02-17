@@ -1,4 +1,3 @@
-use itertools::join;
 use std::path::PathBuf;
 use std::process::{exit, Command};
 use std::{env, fs};
@@ -23,7 +22,7 @@ fn main() {
 
     match wrapper {
         None => {
-            eprint!("Did not find gradlew wrapper!");
+            eprintln!("Did not find gradlew wrapper!");
             exit(1)
         }
         Some((wrapper, dir)) => execute(&wrapper, dir),
@@ -54,7 +53,7 @@ fn find_wrapper_in_dir(dir: &PathBuf) -> Option<PathBuf> {
 // https://stackoverflow.com/a/53479765
 pub fn execute(gradle_path: &PathBuf, working_directory: PathBuf) {
     let args: Vec<String> = env::args().skip(1).collect();
-    println!("Executing {} {}", gradle_path.display(), join(&args, " "));
+    println!("Executing {} {}", gradle_path.display(), args.join(" "));
 
     let spawn_result = Command::new(gradle_path)
         .current_dir(working_directory)
