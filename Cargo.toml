@@ -3,7 +3,7 @@
 [package]
 name = "gradlew-locator"
 version = "0.1.3"
-description = "gradlew convenience - gdub clone"
+description = "gw - gradlew convenience - gdub clone"
 homepage = "https://github.com/normartin/rust-gradlew-locator"
 documentation = "https://github.com/normartin/rust-gradlew-locator"
 repository = "https://github.com/normartin/rust-gradlew-locator"
