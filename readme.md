@@ -1,7 +1,20 @@
 
 # GW
 gw is a [gdub](https://github.com/dougborg/gdub) clone written in Rust for fun.
-Looks for a gradle wrapper (gradlew or gradlew.bat) in your CWD and its parent directories and executes it with the given arguments.
+It looks for a gradle build file (build.gradle or build.gradle.kts) and wrapper (gradlew or gradlew.bat) in your CWD and 
+its parent directories and calls the wrapper in the directory of the build file.
+Any arguments passed to gw are passed to the wrapper.
+
+Call ``gw build`` anywhere in your gradle project and it will call `./gradlew build` in the directory of the nearest build file.
+
+    gw build # instead of # ./gradlew build
+    
+    gw build # instead of # ../gradlew build
+
+    gw build # instead of # ../../gradlew build
+    ...
+ 
+
 
 ## Installation
 

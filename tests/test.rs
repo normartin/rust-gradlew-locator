@@ -46,7 +46,7 @@ fn can_fail_to_find_gradlew() -> Result<(), Box<dyn std::error::Error>> {
     cmd.current_dir(".");
     cmd.arg("foobar").arg("test/file/doesnt/exist");
     cmd.assert().failure().stderr(predicate::str::contains(
-        "Did not find build.gradlew or build.gradle.kt file!",
+        "Did not find build.gradle or build.gradle.kts file!",
     ));
 
     Ok(())

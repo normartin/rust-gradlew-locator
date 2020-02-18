@@ -9,7 +9,7 @@ static GRADLEW: &str = "gradlew";
 static GRADLEW: &str = "gradlew.bat";
 
 static BUILD_FILE: &str = "build.gradle";
-static BUILD_FILE_KT: &str = "build.gradle.kt";
+static BUILD_FILE_KT: &str = "build.gradle.kts";
 
 fn main() {
     #[cfg(windows)]
@@ -25,7 +25,7 @@ fn main() {
 
     match found_build_file_path {
         None => {
-            eprintln!("Did not find build.gradlew or build.gradle.kt file!");
+            eprintln!("Did not find {} or {} file!", BUILD_FILE, BUILD_FILE_KT);
             exit(1)
         }
         Some(build_file_path) => {
@@ -60,12 +60,12 @@ fn find_path_containing_recursive(
     let found = find_file_in_dir(&dir, matches);
 
     if found {
-        return Some(dir.clone());
+        Some(dir.clone())
     } else {
-        return match dir.parent() {
+        match dir.parent() {
             Some(parent) => find_path_containing_recursive(&parent.to_path_buf(), matches),
             None => None,
-        };
+        }
     }
 }
 
@@ -74,8 +74,7 @@ fn find_file_in_dir(dir: &PathBuf, matches: &dyn Fn(&PathBuf) -> bool) -> bool {
 
     files
         .filter_map(Result::ok)
-        .find(|entry| matches(&entry.path()))
-        .is_some()
+        .any(|entry| matches(&entry.path()))
 }
 
 // https://stackoverflow.com/a/53479765
