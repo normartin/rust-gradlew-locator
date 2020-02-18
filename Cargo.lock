@@ -81,7 +81,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "gradlew-locator"
+name = "gw"
 version = "0.1.3"
 dependencies = [
  "assert_cmd",

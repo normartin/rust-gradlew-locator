@@ -1,7 +1,7 @@
 # https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [package]
-name = "gradlew-locator"
+name = "gw"
 version = "0.1.3"
 description = "gw - gradlew convenience - gdub clone"
 homepage = "https://github.com/normartin/rust-gradlew-locator"
