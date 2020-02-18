@@ -2,8 +2,16 @@
 
 [package]
 name = "gw"
-version = "0.1.0"
-authors = ["martinmoeller <martinmoeller>"]
+version = "0.1.3"
+description = "gw - gradlew convenience - gdub clone"
+homepage = "https://github.com/normartin/rust-gradlew-locator"
+documentation = "https://github.com/normartin/rust-gradlew-locator"
+repository = "https://github.com/normartin/rust-gradlew-locator"
+authors = ["Martin Moeller"]
+license = "MIT"
+readme = "readme.md"
+categories = ["development-tools"]
+keywords = ["gradle", "gradlew", "cli", "gdub"]
 edition = "2018"
 
 [dependencies]

@@ -1,5 +1,5 @@
 
-# GW
+# gw
 gw is a [gdub](https://github.com/dougborg/gdub) clone written in Rust for fun.
 It looks for a gradle build file (build.gradle or build.gradle.kts) and wrapper (gradlew or gradlew.bat) in your CWD and 
 its parent directories and calls the wrapper in the directory of the build file.
@@ -19,7 +19,7 @@ Call ``gw build`` anywhere in your gradle project and it will call `./gradlew bu
 ## Installation
 
 1. Install Rust's [cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html)
-2. ``cargo install --git https://github.com/normartin/rust-gradlew-locator``
+2. ``cargo install gw``
 3. Use ``gw`` in one of your gradle projects
 
 or use a released binary:
