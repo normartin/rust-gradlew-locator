@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::path::{PathBuf};
 use std::process::{exit, Command};
 use std::{env, fs};
 
@@ -10,15 +10,15 @@ static GRADLEW: &str = "gradlew.bat";
 
 fn main() {
     #[cfg(windows)]
-    ctrlc::set_handler(move || {
+        ctrlc::set_handler(move || {
         // ignore SIGINT and let the child process handle it
         // this is required for windows batch "Terminate batch job (Y/N)"
     })
-    .expect("Error installing Ctrl-C handler");
+        .expect("Error installing Ctrl-C handler");
 
     let current_dir = env::current_dir().expect("no current dir :-9?");
 
-    let wrapper = find_wrapper(current_dir);
+    let wrapper = find_file_recursive(current_dir, &PathBuf::from(GRADLEW));
 
     match wrapper {
         None => {
@@ -29,25 +29,25 @@ fn main() {
     }
 }
 
-fn find_wrapper(dir: PathBuf) -> Option<(PathBuf, PathBuf)> {
-    let found = find_wrapper_in_dir(&dir);
+fn find_file_recursive(dir: PathBuf, file: &PathBuf) -> Option<(PathBuf, PathBuf)> {
+    let found = find_file_in_dir(&dir, file);
 
     match found {
         Some(wrapper) => Some((wrapper, dir)),
         None => match dir.parent() {
-            Some(parent) => find_wrapper(parent.to_path_buf()),
+            Some(parent) => find_file_recursive(parent.to_path_buf(), file),
             None => None,
         },
     }
 }
 
-fn find_wrapper_in_dir(dir: &PathBuf) -> Option<PathBuf> {
+fn find_file_in_dir(dir: &PathBuf, file: &PathBuf) -> Option<PathBuf> {
     let files = fs::read_dir(dir).expect("Failed to list contents!");
 
     files
         .filter_map(Result::ok)
         .map(|entry| entry.path())
-        .find(|file| file.ends_with(PathBuf::from(GRADLEW)))
+        .find(|path| path.ends_with(file))
 }
 
 // https://stackoverflow.com/a/53479765
