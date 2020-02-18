@@ -74,8 +74,7 @@ fn find_file_in_dir(dir: &PathBuf, matches: &dyn Fn(&PathBuf) -> bool) -> bool {
 
     files
         .filter_map(Result::ok)
-        .map(|entry| entry.path())
-        .find(matches)
+        .find(|entry| matches(&entry.path()))
         .is_some()
 }
 
