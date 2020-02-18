@@ -8,6 +8,9 @@ static GRADLEW: &str = "gradlew";
 #[cfg(windows)]
 static GRADLEW: &str = "gradlew.bat";
 
+static BUILD_FILE: &str = "build.gradle";
+static BUILD_FILE_KT: &str = "build.gradle.kts";
+
 fn main() {
     #[cfg(windows)]
     ctrlc::set_handler(move || {
@@ -18,40 +21,64 @@ fn main() {
 
     let current_dir = env::current_dir().expect("no current dir :-9?");
 
-    let wrapper = find_wrapper(current_dir);
+    let found_build_file_path = find_path_containing_recursive(&current_dir, &is_build_file);
 
-    match wrapper {
+    match found_build_file_path {
         None => {
-            eprintln!("Did not find gradlew wrapper!");
+            eprintln!("Did not find {} or {} file!", BUILD_FILE, BUILD_FILE_KT);
             exit(1)
         }
-        Some((wrapper, dir)) => execute(&wrapper, dir),
+        Some(build_file_path) => {
+            let found_wrapper_path = find_path_containing_recursive(&current_dir, &is_gradlew);
+
+            match found_wrapper_path {
+                None => {
+                    eprintln!("Did not find gradlew wrapper!");
+                    exit(1)
+                }
+                Some(wrapper_path) => {
+                    let wrapper_file = wrapper_path.join(PathBuf::from(GRADLEW));
+                    execute(&wrapper_file, &build_file_path)
+                }
+            }
+        }
     }
 }
 
-fn find_wrapper(dir: PathBuf) -> Option<(PathBuf, PathBuf)> {
-    let found = find_wrapper_in_dir(&dir);
+fn is_gradlew(path: &PathBuf) -> bool {
+    path.ends_with(&PathBuf::from(GRADLEW))
+}
 
-    match found {
-        Some(wrapper) => Some((wrapper, dir)),
-        None => match dir.parent() {
-            Some(parent) => find_wrapper(parent.to_path_buf()),
+fn is_build_file(path: &PathBuf) -> bool {
+    path.ends_with(&PathBuf::from(BUILD_FILE)) || path.ends_with(&PathBuf::from(BUILD_FILE_KT))
+}
+
+fn find_path_containing_recursive(
+    dir: &PathBuf,
+    matches: &dyn Fn(&PathBuf) -> bool,
+) -> Option<PathBuf> {
+    let found = find_file_in_dir(&dir, matches);
+
+    if found {
+        Some(dir.clone())
+    } else {
+        match dir.parent() {
+            Some(parent) => find_path_containing_recursive(&parent.to_path_buf(), matches),
             None => None,
-        },
+        }
     }
 }
 
-fn find_wrapper_in_dir(dir: &PathBuf) -> Option<PathBuf> {
+fn find_file_in_dir(dir: &PathBuf, matches: &dyn Fn(&PathBuf) -> bool) -> bool {
     let files = fs::read_dir(dir).expect("Failed to list contents!");
 
     files
         .filter_map(Result::ok)
-        .map(|entry| entry.path())
-        .find(|file| file.ends_with(PathBuf::from(GRADLEW)))
+        .any(|entry| matches(&entry.path()))
 }
 
 // https://stackoverflow.com/a/53479765
-pub fn execute(gradle_path: &PathBuf, working_directory: PathBuf) {
+pub fn execute(gradle_path: &PathBuf, working_directory: &PathBuf) {
     let args: Vec<String> = env::args().skip(1).collect();
     println!("Executing {} {}", gradle_path.display(), args.join(" "));
 

@@ -31,7 +31,7 @@ fn can_pass_args() -> Result<(), Box<dyn std::error::Error>> {
 #[test]
 fn can_run_deep_gw() -> Result<(), Box<dyn std::error::Error>> {
     let mut cmd = Command::cargo_bin(BIN)?;
-    cmd.current_dir("./tests/deep");
+    cmd.current_dir("./tests/subproject");
     cmd.arg("foobar").arg("test/file/doesnt/exist");
     cmd.assert()
         .success()
@@ -45,21 +45,33 @@ fn can_fail_to_find_gradlew() -> Result<(), Box<dyn std::error::Error>> {
     let mut cmd = Command::cargo_bin(BIN)?;
     cmd.current_dir(".");
     cmd.arg("foobar").arg("test/file/doesnt/exist");
-    cmd.assert()
-        .failure()
-        .stderr(predicate::str::contains("Did not find gradlew wrapper!"));
+    cmd.assert().failure().stderr(predicate::str::contains(
+        "Did not find build.gradle or build.gradle.kts file!",
+    ));
 
     Ok(())
 }
 
 #[test]
-fn uses_directory_of_wrapper_as_working_dir() -> Result<(), Box<dyn std::error::Error>> {
+fn uses_directory_of_build_file_as_working_dir() -> Result<(), Box<dyn std::error::Error>> {
     let mut cmd = Command::cargo_bin(BIN)?;
-    cmd.current_dir("./tests/deep");
+    cmd.current_dir("./tests/subproject/");
     cmd.assert()
         .success()
-        .stdout(predicate::str::contains("\"cwd tests\""))
-        .stdout(predicate::str::contains("deep").not());
+        .stdout(predicate::str::contains("\"cwd subproject\""))
+        .stdout(predicate::str::contains("src").not());
+
+    Ok(())
+}
+
+#[test]
+fn uses_directory_of_build_file_as_working_dir_deep() -> Result<(), Box<dyn std::error::Error>> {
+    let mut cmd = Command::cargo_bin(BIN)?;
+    cmd.current_dir("./tests/subproject/src");
+    cmd.assert()
+        .success()
+        .stdout(predicate::str::contains("\"cwd subproject\""))
+        .stdout(predicate::str::contains("src").not());
 
     Ok(())
 }
