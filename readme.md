@@ -19,7 +19,7 @@ Call ``gw build`` anywhere in your gradle project and it will call `./gradlew bu
 ## Installation
 
 1. Install Rust's [cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html)
-2. ``cargo install --git https://github.com/normartin/rust-gradlew-locator``
+2. ``cargo install gradlew-locator``
 3. Use ``gw`` in one of your gradle projects
 
 or use a released binary:
