@@ -1,4 +1,7 @@
 
+[![Crates.io](https://img.shields.io/crates/v/gw)](https://crates.io/crates/gw) 
+[![Build](https://github.com/normartin/rust-gradlew-locator/workflows/Build/badge.svg)](https://github.com/normartin/rust-gradlew-locator/actions?query=workflow%3ABuild)
+
 # gw
 gw is a [gdub](https://github.com/dougborg/gdub) clone written in Rust for fun.
 It looks for a gradle build file (build.gradle or build.gradle.kts) and wrapper (gradlew or gradlew.bat) in your CWD and 
