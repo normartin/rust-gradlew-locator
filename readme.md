@@ -10,12 +10,12 @@ Works on Linux, MacOS and Windows.
 
 Call ``gw build`` anywhere in your gradle project and it will call `./gradlew build` in the directory of the nearest build file.
 
- without gw             | with gw    
----                    :|: ---        
-`./gradlew build`       | `gw build`
-`../gradlew build`      | `gw build`
-`../../gradlew build`   | `gw build`
-`...`                   |        
+| without gw             | with gw     |    
+|---                    :|: ---        |
+|`./gradlew build`       | `gw build`  |
+|`../gradlew build`      | `gw build`  |
+|`../../gradlew build`   | `gw build`  |
+|`...`                   |             |
  
 
 
