@@ -92,9 +92,10 @@ fn uses_gradle_from_path() -> Result<(), Box<dyn std::error::Error>> {
     let path_with_gradle_executable = current_dir.join(PathBuf::from("tests"));
 
     let path = std::env::var("PATH").unwrap();
+    let test_path = format!("{}:{}", path_with_gradle_executable.as_os_str().to_str().unwrap(), path);
     cmd.env(
         "PATH",
-        path + ":" + path_with_gradle_executable.as_os_str().to_str().unwrap(),
+        test_path,
     );
 
     cmd.current_dir("./tests/gradle_project");
