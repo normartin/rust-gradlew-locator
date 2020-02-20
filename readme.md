@@ -9,7 +9,7 @@ Any arguments passed to gw are passed to the wrapper.
 If there is no gradle wrapper it tries to use gradle from $PATH.
 Works on Linux, MacOS and Windows. 
 
-Call ``gw gradlew_project.build`` anywhere in your gradle project and it will call `./gradlew gradlew_project.build` in the directory of the nearest gradlew_project.build file.
+Call ``gw build`` anywhere in your gradle project and it will call `./gradlew build` in the directory of the nearest gradle build file.
 
 | **without gw**                            | **with gw** |    
 |                                       ---:|:---         |
