@@ -4,17 +4,17 @@
 
 # gw
 gw is a [gdub](https://github.com/dougborg/gdub) clone written in Rust for fun.
-It finds the nearest gradle build file and executes it with the corresponding wrapper.
+It finds the nearest gradle gradlew_project.build file and executes it with the corresponding wrapper.
 Any arguments passed to gw are passed to the wrapper.
 Works on Linux, MacOS and Windows. 
 
-Call ``gw build`` anywhere in your gradle project and it will call `./gradlew build` in the directory of the nearest build file.
+Call ``gw gradlew_project.build`` anywhere in your gradle project and it will call `./gradlew gradlew_project.build` in the directory of the nearest gradlew_project.build file.
 
 | without gw             | with gw     |    
 |                    ---:|:---         |
-|`./gradlew build`       | `gw build`  |
-|`../gradlew build`      | `gw build`  |
-|`../../gradlew build`   | `gw build`  |
+|`./gradlew gradlew_project.build`       | `gw gradlew_project.build`  |
+|`../gradlew gradlew_project.build`      | `gw gradlew_project.build`  |
+|`../../gradlew gradlew_project.build`   | `gw gradlew_project.build`  |
 |`...`                   |             |
 
 

@@ -1,0 +1,13 @@
+#!/bin/bash
+echo "This is gradle. You made it!"
+
+echo "arg 1 $1"
+echo "arg 2 $2"
+
+CWD=${PWD##*/}
+echo "\"cwd $CWD\""
+
+if [ "$1" == "fail" ]; then
+    echo "it failed"
+    exit 1
+fi
