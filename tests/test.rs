@@ -83,6 +83,36 @@ fn uses_gradle_from_path() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+#[cfg(unix)]
+#[test]
+fn uses_gradle_from_path() -> Result<(), Box<dyn std::error::Error>> {
+    let mut cmd = Command::new("sh");
+
+    let current_dir = env::current_dir().unwrap();
+    let path_with_gradle_executable = current_dir.join(PathBuf::from("tests"));
+
+    let path = std::env::var("PATH").unwrap();
+    cmd.env(
+        "PATH",
+        path + ":" + path_with_gradle_executable.as_os_str().to_str().unwrap(),
+    );
+
+    cmd.current_dir("./tests/gradle_project");
+    cmd.arg("-c");
+    cmd.arg(executable_path(BIN));
+
+    cmd.assert()
+        .success()
+        .stdout(predicate::str::contains(
+            "This is global gradle. You made it!",
+        ))
+        .stderr(predicate::str::contains(
+            "Did not find gradlew wrapper! Trying gradle from $PATH",
+        ));
+
+    Ok(())
+}
+
 #[test]
 fn uses_directory_of_build_file_as_working_dir() -> Result<(), Box<dyn std::error::Error>> {
     let mut cmd = Command::cargo_bin(BIN)?;
