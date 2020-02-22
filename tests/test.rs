@@ -56,22 +56,22 @@ fn can_fail_to_find_gradlew() -> Result<(), Box<dyn std::error::Error>> {
 #[test]
 fn uses_gradle_from_path() -> Result<(), Box<dyn std::error::Error>> {
     #[cfg(unix)]
-        let mut cmd = Command::new("sh");
+    let mut cmd = Command::new("sh");
 
     #[cfg(windows)]
-        let mut cmd = Command::new("cmd");
+    let mut cmd = Command::new("cmd");
 
     let dir_with_gradle_executable = env::current_dir().unwrap().join(PathBuf::from("tests"));
 
     #[cfg(unix)]
-        let path = format!(
+    let path = format!(
         "{}:{}",
         dir_with_gradle_executable.to_str().unwrap(),
         std::env::var("PATH").unwrap()
     );
 
     #[cfg(windows)]
-        let path = format!(
+    let path = format!(
         "{};{}",
         std::env::var("PATH").unwrap(),
         dir_with_gradle_executable.to_str().unwrap()
@@ -81,10 +81,10 @@ fn uses_gradle_from_path() -> Result<(), Box<dyn std::error::Error>> {
     cmd.current_dir("./tests/gradle_project");
 
     #[cfg(windows)]
-        cmd.arg("/C");
+    cmd.arg("/C");
 
     #[cfg(unix)]
-        cmd.arg("-c");
+    cmd.arg("-c");
 
     cmd.arg(executable_path(BIN));
 
@@ -93,9 +93,11 @@ fn uses_gradle_from_path() -> Result<(), Box<dyn std::error::Error>> {
         .stderr(predicate::str::contains(
             "Did not find gradlew wrapper! Trying gradle from $PATH",
         ))
-        .stdout(predicate::str::contains(
-            "This is global gradle. You made it!",
-        ));
+        .stdout(
+            predicate::str::contains("This is global gradle. You made it!")
+                // in case you have installed gradle on your system
+                .or(predicate::str::contains("Welcome to Gradle")),
+        );
 
     Ok(())
 }
