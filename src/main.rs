@@ -11,6 +11,8 @@ static GRADLEW: &str = "gradlew.bat";
 static BUILD_FILE: &str = "build.gradle";
 static BUILD_FILE_KT: &str = "build.gradle.kts";
 
+static GRALDE_BIN: &str = "gradle";
+
 fn main() {
     #[cfg(windows)]
     ctrlc::set_handler(move || {
@@ -33,8 +35,8 @@ fn main() {
 
             match found_wrapper_path {
                 None => {
-                    eprintln!("Did not find gradlew wrapper!");
-                    exit(1)
+                    eprintln!("Did not find gradlew wrapper! Trying gradle from $PATH");
+                    execute(&PathBuf::from(GRALDE_BIN), &build_file_path)
                 }
                 Some(wrapper_path) => {
                     let wrapper_file = wrapper_path.join(PathBuf::from(GRADLEW));
