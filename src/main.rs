@@ -1,3 +1,4 @@
+use std::path::Path;
 use std::path::PathBuf;
 use std::process::{exit, Command};
 use std::{env, fs};
@@ -47,19 +48,19 @@ fn main() {
     }
 }
 
-fn is_gradlew(path: &PathBuf) -> bool {
+fn is_gradlew(path: &Path) -> bool {
     path.ends_with(&PathBuf::from(GRADLEW))
 }
 
-fn is_build_file(path: &PathBuf) -> bool {
+fn is_build_file(path: &Path) -> bool {
     path.ends_with(&PathBuf::from(BUILD_FILE)) || path.ends_with(&PathBuf::from(BUILD_FILE_KT))
 }
 
 fn find_path_containing_recursive(
     dir: &PathBuf,
-    matches: &dyn Fn(&PathBuf) -> bool,
+    matches: &dyn Fn(&Path) -> bool,
 ) -> Option<PathBuf> {
-    let found = find_file_in_dir(&dir, matches);
+    let found = find_file_in_dir(dir, matches);
 
     if found {
         Some(dir.clone())
@@ -71,7 +72,7 @@ fn find_path_containing_recursive(
     }
 }
 
-fn find_file_in_dir(dir: &PathBuf, matches: &dyn Fn(&PathBuf) -> bool) -> bool {
+fn find_file_in_dir(dir: &PathBuf, matches: &dyn Fn(&Path) -> bool) -> bool {
     let files = fs::read_dir(dir).expect("Failed to list contents!");
 
     files
